@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{582cf4cb-cf26-43ab-8eca-b2f318b2a51e}</ProjectGuid>
+    <Keyword>Linux</Keyword>
+    <RootNamespace>TixRsz</RootNamespace>
+    <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
+    <ApplicationType>Linux</ApplicationType>
+    <ApplicationTypeRevision>1.0</ApplicationTypeRevision>
+    <TargetLinuxPlatform>Generic</TargetLinuxPlatform>
+    <LinuxProjectType>{FC1A4D80-50E9-41DA-9192-61C0DBAA00D2}</LinuxProjectType>
+    <ProjectName>TiXRsz</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <ConfigurationType>Makefile</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <NMakeIncludeSearchPath>../vips-dev/include;../vips-dev/include/glib-2.0;../vips-dev/lib/glib-2.0/include;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
+    <RemoteBuildCommandLine>cd ../src; make</RemoteBuildCommandLine>
+    <ProjectPublicIncludePath>
+    </ProjectPublicIncludePath>
+    <AdditionalSourcesToCopyMapping>$(SolutionDir)\..\vips-dev:=../vips-dev</AdditionalSourcesToCopyMapping>
+  </PropertyGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\defer.h" />
+    <ClInclude Include="..\src\tix_const.h" />
+    <ClInclude Include="..\src\tix_expert.h" />
+    <ClInclude Include="..\src\tix_rsz.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\tix_expert.cpp" />
+    <ClCompile Include="..\src\tix_rsz.cpp" />
+    <ClCompile Include="..\src\tix_rsz_gif.cpp" />
+    <ClCompile Include="..\src\tix_rsz_img.cpp" />
+    <ClCompile Include="..\src\tix_test.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\src\Makefile" />
+  </ItemGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <CppLanguageStandard>c++17</CppLanguageStandard>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+</Project>

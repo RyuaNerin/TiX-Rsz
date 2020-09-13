@@ -1,0 +1,29 @@
+{
+    "configurations": [
+        {
+            "name": "GCC",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/vips-dev/include",
+                "${workspaceFolder}/vips-dev/include/glib-2.0",
+                "${workspaceFolder}/vips-dev/include/ImageMagick-6",
+                "${workspaceFolder}/vips-dev/lib/glib-2.0/include",
+                "${workspaceFolder}/src/"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "windowsSdkVersion": "10.0.18362.0",
+            "compilerPath": "C:/msys64/mingw64/bin/g++.exe",
+            "cStandard": "gnu11",
+            "cppStandard": "gnu++17",
+            "intelliSenseMode": "gcc-x64",
+            "compilerArgs": [
+                "-static-libgcc"
+            ]
+        }
+    ],
+    "version": 4
+}

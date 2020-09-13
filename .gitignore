@@ -1,0 +1,8 @@
+libwebp*
+build-win64-mxe
+vips-dev
+*.dll
+*.o
+*.a
+obj
+bin
