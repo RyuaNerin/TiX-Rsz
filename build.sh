@@ -6,7 +6,7 @@ if ! [ -x "$(command -v docker)" ]; then
 fi
 
 # Build libvips web x86_64 static
-git clone https://github.com/libvips/build-win64-mxe
+git clone -b 'v8.10.1' --single-branch https://github.com/libvips/build-win64-mxe
 ( \
     cd build-win64-mxe; \
     for i in ../patches/*.patch; do patch -l -p1 < "$i"; done; \

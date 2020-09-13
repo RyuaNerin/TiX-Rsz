@@ -1,5 +1,5 @@
 diff --git a/build/vips-web.mk b/build/vips-web.mk
-index db099bf..7cdfcee 100644
+index db099bf..2101638 100644
 --- a/build/vips-web.mk
 +++ b/build/vips-web.mk
 @@ -9,7 +9,8 @@ $(PKG)_GH_CONF  := libvips/libvips/releases,v
@@ -12,15 +12,18 @@ index db099bf..7cdfcee 100644
 
  define $(PKG)_PRE_CONFIGURE
      # Copy some files to the packaging directory
-@@ -29,6 +30,7 @@ define $(PKG)_PRE_CONFIGURE
+@@ -29,8 +30,10 @@ define $(PKG)_PRE_CONFIGURE
       printf '  "glib": "$(glib_VERSION)",\n'; \
       printf '  "gsf": "$(libgsf_VERSION)",\n'; \
       printf '  "harfbuzz": "$(harfbuzz_VERSION)",\n'; \
 +     printf '  "imagemagick": "$(imagemagick_VERSION)",\n'; \
       printf '  "jpeg": "$(libjpeg-turbo_VERSION)",\n'; \
       printf '  "lcms": "$(lcms_VERSION)",\n'; \
++     printf '  "openjpeg": "$(openjpeg_VERSION)",\n'; \
       printf '  "orc": "$(orc_VERSION)",\n'; \
-@@ -60,7 +62,6 @@ define $(PKG)_BUILD
+      printf '  "pango": "$(pango_VERSION)",\n'; \
+      printf '  "pixman": "$(pixman_VERSION)",\n'; \
+@@ -60,7 +63,6 @@ define $(PKG)_BUILD
          $(MXE_DISABLE_DOC_OPTS) \
          --enable-debug=no \
          --without-fftw \
