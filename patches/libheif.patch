@@ -1,0 +1,13 @@
+diff --git a/build/libheif.mk b/build/libheif.mk
+index 882c0c0..d6dbe47 100644
+--- a/build/libheif.mk
++++ b/build/libheif.mk
+@@ -10,6 +10,8 @@ $(PKG)_DEPS     := cc aom libde265 x265
+
+ define $(PKG)_BUILD
+     cd '$(BUILD_DIR)' && $(TARGET)-cmake '$(SOURCE_DIR)' \
++       -DBUILD_SHARED_LIBS=OFF \
++       -DWITH_EXAMPLES=OFF \
+         $(if $(IS_LLVM),,-DCMAKE_CXX_FLAGS='-Wno-error=maybe-uninitialized')
+
+     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
