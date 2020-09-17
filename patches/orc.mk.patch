@@ -1,0 +1,12 @@
+diff --git a/build/orc.mk b/build/orc.mk
+index 0892ef8..f31ba18 100644
+--- a/build/orc.mk
++++ b/build/orc.mk
+@@ -20,6 +20,7 @@ define $(PKG)_BUILD
+     '$(TARGET)-meson' \
+         --buildtype=release \
++        --default-library=static \
+         --strip \
+         --libdir='lib' \
+         --includedir='include' \
+         -Dbenchmarks=disabled \

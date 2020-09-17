@@ -1,0 +1,12 @@
+diff --git a/build/libspng.mk b/build/libspng.mk
+index 29c117f..8e3c404 100644
+--- a/build/libspng.mk
++++ b/build/libspng.mk
+@@ -11,6 +11,7 @@ $(PKG)_DEPS     := cc zlib
+ define $(PKG)_BUILD
+     '$(TARGET)-meson' \
+         --buildtype=release \
++        --default-library=static \
+         --strip \
+         --libdir='lib' \
+         --includedir='include' \

@@ -1,57 +1,19 @@
-diff --git a/build/libheif.mk b/build/libheif.mk
-index 882c0c0..6312a36 100644
---- a/build/libheif.mk
-+++ b/build/libheif.mk
-@@ -10,6 +10,8 @@ $(PKG)_DEPS     := cc aom libde265 x265
- 
- define $(PKG)_BUILD
-     cd '$(BUILD_DIR)' && $(TARGET)-cmake '$(SOURCE_DIR)' \
-+       -DBUILD_SHARED_LIBS=OFF \
-+       -DWITH_EXAMPLES=OFF \
-         $(if $(IS_LLVM),,-DCMAKE_CXX_FLAGS='-Wno-error=maybe-uninitialized')
- 
-     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)'
-diff --git a/build/overrides.mk b/build/overrides.mk
-index d6eb112..d2ceaf6 100644
---- a/build/overrides.mk
-+++ b/build/overrides.mk
-@@ -9,6 +9,8 @@ gcc_PATCHES := $(realpath $(sort $(wildcard $(dir $(lastword $(MAKEFILE_LIST)))/
- # and compile without optimizations / stripping.
- _gcc_CONFIGURE_OPTS=--with-build-sysroot='$(PREFIX)/$(TARGET)' \
- --disable-libgomp \
-+--enable-static --disable-shared \
-+--disable-dependency-tracking \
- CFLAGS='' \
- CXXFLAGS='' \
- LDFLAGS=''
-@@ -350,6 +352,7 @@ endef
- # build with Meson.
- define harfbuzz_BUILD
-     '$(TARGET)-meson' \
-+	--default-library=static \
-         --buildtype=release \
-         --strip \
-         --libdir='lib' \
 diff --git a/build/vips-web.mk b/build/vips-web.mk
-index db099bf..d75ec67 100644
+index db099bf..eaefb23 100644
 --- a/build/vips-web.mk
 +++ b/build/vips-web.mk
-@@ -8,8 +8,13 @@ $(PKG)_PATCHES  := $(realpath $(sort $(wildcard $(dir $(lastword $(MAKEFILE_LIST
- $(PKG)_GH_CONF  := libvips/libvips/releases,v
+@@ -9,7 +9,9 @@ $(PKG)_GH_CONF  := libvips/libvips/releases,v
  $(PKG)_SUBDIR   := vips-$($(PKG)_VERSION)
  $(PKG)_FILE     := vips-$($(PKG)_VERSION).tar.gz
-+#$(PKG)_DEPS     := cc libwebp librsvg giflib glib pango libgsf \
-+                   libjpeg-turbo tiff lcms libexif libpng libspng orc \
-+                   imagemagick libheif
-+
  $(PKG)_DEPS     := cc libwebp librsvg giflib glib pango libgsf \
 -                   libjpeg-turbo tiff lcms libexif libpng libspng orc
-+                   libjpeg-turbo tiff lcms libexif libheif imagemagick libpng libspng orc
++                   libjpeg-turbo tiff lcms libexif libheif imagemagick \
++                   libpng libspng orc
 +
  
  define $(PKG)_PRE_CONFIGURE
      # Copy some files to the packaging directory
-@@ -18,6 +23,7 @@ define $(PKG)_PRE_CONFIGURE
+@@ -18,6 +20,7 @@ define $(PKG)_PRE_CONFIGURE
  
      (printf '{\n'; \
       printf '  "cairo": "$(cairo_VERSION)",\n'; \
@@ -59,7 +21,7 @@ index db099bf..d75ec67 100644
       printf '  "exif": "$(libexif_VERSION)",\n'; \
       printf '  "expat": "$(expat_VERSION)",\n'; \
       printf '  "ffi": "$(libffi_VERSION)",\n'; \
-@@ -29,8 +35,11 @@ define $(PKG)_PRE_CONFIGURE
+@@ -29,8 +32,11 @@ define $(PKG)_PRE_CONFIGURE
       printf '  "glib": "$(glib_VERSION)",\n'; \
       printf '  "gsf": "$(libgsf_VERSION)",\n'; \
       printf '  "harfbuzz": "$(harfbuzz_VERSION)",\n'; \
@@ -71,7 +33,7 @@ index db099bf..d75ec67 100644
       printf '  "orc": "$(orc_VERSION)",\n'; \
       printf '  "pango": "$(pango_VERSION)",\n'; \
       printf '  "pixman": "$(pixman_VERSION)",\n'; \
-@@ -40,6 +49,7 @@ define $(PKG)_PRE_CONFIGURE
+@@ -40,6 +46,7 @@ define $(PKG)_PRE_CONFIGURE
       printf '  "tiff": "$(tiff_VERSION)",\n'; \
       printf '  "vips": "$(vips-web_VERSION)",\n'; \
       printf '  "webp": "$(libwebp_VERSION)",\n'; \
@@ -79,7 +41,7 @@ index db099bf..d75ec67 100644
       printf '  "xml": "$(libxml2_VERSION)",\n'; \
       printf '  "zlib": "$(zlib_VERSION)"\n'; \
       printf '}';) \
-@@ -55,13 +65,13 @@ define $(PKG)_BUILD
+@@ -55,13 +62,11 @@ define $(PKG)_BUILD
          --host='$(TARGET)' \
          --build='$(BUILD)' \
          --prefix='$(PREFIX)/$(TARGET)' \
@@ -87,13 +49,11 @@ index db099bf..d75ec67 100644
 -        --enable-shared \
 +        --enable-static \
 +        --disable-shared \
-+	--disable-dependency-tracking \
          $(MXE_DISABLE_DOC_OPTS) \
          --enable-debug=no \
          --without-fftw \
 -        --without-magick \
 -        --without-heif \
-+	--without-heif \
          --without-openslide \
          --without-pdfium \
          --without-poppler \
