@@ -2,14 +2,13 @@ diff --git a/build/vips-web.mk b/build/vips-web.mk
 index db099bf..eaefb23 100644
 --- a/build/vips-web.mk
 +++ b/build/vips-web.mk
-@@ -9,7 +9,9 @@ $(PKG)_GH_CONF  := libvips/libvips/releases,v
+@@ -9,7 +9,8 @@ $(PKG)_GH_CONF  := libvips/libvips/releases,v
  $(PKG)_SUBDIR   := vips-$($(PKG)_VERSION)
  $(PKG)_FILE     := vips-$($(PKG)_VERSION).tar.gz
  $(PKG)_DEPS     := cc libwebp librsvg giflib glib pango libgsf \
 -                   libjpeg-turbo tiff lcms libexif libpng libspng orc
-+                   libjpeg-turbo tiff lcms libexif libheif imagemagick \
-+                   libpng libspng orc
-+
++                   libjpeg-turbo tiff lcms libexif libpng libspng orc \
++                   libheif imagemagick
  
  define $(PKG)_PRE_CONFIGURE
      # Copy some files to the packaging directory
@@ -41,7 +40,7 @@ index db099bf..eaefb23 100644
       printf '  "xml": "$(libxml2_VERSION)",\n'; \
       printf '  "zlib": "$(zlib_VERSION)"\n'; \
       printf '}';) \
-@@ -55,13 +62,11 @@ define $(PKG)_BUILD
+@@ -55,13 +62,14 @@ define $(PKG)_BUILD
          --host='$(TARGET)' \
          --build='$(BUILD)' \
          --prefix='$(PREFIX)/$(TARGET)' \
@@ -49,6 +48,9 @@ index db099bf..eaefb23 100644
 -        --enable-shared \
 +        --enable-static \
 +        --disable-shared \
++        --disable-debug \
++        --disable-deprecated \
++        --disable-introspection \
          $(MXE_DISABLE_DOC_OPTS) \
          --enable-debug=no \
          --without-fftw \

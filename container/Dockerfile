@@ -1,7 +1,8 @@
 FROM buildpack-deps:buster
 
-RUN apt-get update \
-  && apt-get install -y \
+RUN \
+  apt-get update && \
+  apt-get install -y \
     g++-mingw-w64 \
     wine
 

@@ -20,6 +20,10 @@ if ! [ -d "vips-dev" ]; then
     if ! [ -d "build-win64-mxe" ]; then
         git clone -b 'v8.10.1' --single-branch https://github.com/libvips/build-win64-mxe
     fi
+    
+    for i in ./patches-mxe/*.patch; do
+        cp -f "$i" "build-win64-mxe/build/patches/"
+    done;
 
     ( \
         cd build-win64-mxe; \

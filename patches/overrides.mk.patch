@@ -18,16 +18,6 @@ index d6eb112..702beaa 100644
          --strip \
          --libdir='lib' \
          --bindir='bin' \
-@@ -374,7 +376,8 @@ define freetype_BUILD
-     $(if $(BUILD_STATIC), \
-         ln -sf libharfbuzz.a '$(PREFIX)/$(TARGET)/lib/libharfbuzz_too.a' \
-         && ln -sf libfreetype.a '$(PREFIX)/$(TARGET)/lib/libfreetype_too.a',)
--    $($(PKG)_BUILD_COMMON)
-+    $($(PKG)_BUILD_COMMON) \
-+        --enable-static --disable-shared;
-     $(if $(BUILD_STATIC), \
-         # remove circular dependencies from pc file
-         $(SED) -i '/^Libs.private:/s/\-lharfbuzz_too -lfreetype_too//g' '$(PREFIX)/$(TARGET)/lib/pkgconfig/freetype2.pc' \
 @@ -391,6 +394,7 @@ define libgsf_BUILD
  
      cd '$(BUILD_DIR)' && $(SOURCE_DIR)/configure \
@@ -68,14 +58,25 @@ index d6eb112..702beaa 100644
          --with-zlib \
          CFLAGS="$(CFLAGS) -DCMS_RELY_ON_WINDOWS_STATIC_MUTEX_INIT"
      $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)' $(MXE_DISABLE_PROGRAMS)
-@@ -478,6 +486,7 @@ define imagemagick_BUILD
- 
+@@ -478,6 +485,9 @@ define imagemagick_BUILD
+
      cd '$(BUILD_DIR)' && $(SOURCE_DIR)/configure \
          $(MXE_CONFIGURE_OPTS) \
-+        --enable-static --disable-shared \
++        --enable-static=yes \
++        --enable-shared=no \
++        --disable-shared \
          --without-fftw \
          --without-fontconfig \
          --without-gvc \
+@@ -499,7 +509,7 @@ define imagemagick_BUILD
+         --disable-largefile \
+         --disable-opencl \
+         --disable-openmp \
+-        CFLAGS="$(CFLAGS) -DMAGICKCORE_EXCLUDE_DEPRECATED"
++        CFLAGS="$(CFLAGS) -DMAGICKCORE_EXCLUDE_DEPRECATED -fPIC"
+     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)' $(MXE_DISABLE_CRUFT)
+     $(MAKE) -C '$(BUILD_DIR)' -j 1 install $(MXE_DISABLE_CRUFT)
+ endef
 @@ -523,6 +532,7 @@ define fontconfig_BUILD
      cd '$(SOURCE_DIR)' && autoreconf -fi
      cd '$(BUILD_DIR)' && $(SOURCE_DIR)/configure \
@@ -132,12 +133,3 @@ index d6eb112..702beaa 100644
          --with-zlib='$(PREFIX)/$(TARGET)/lib' \
          --without-lzma \
          --without-debug \
-@@ -742,7 +758,7 @@ define glib_BUILD
-     # build as shared library, since we need `libgobject-2.0-0.dll`
-     # and `libglib-2.0-0.dll` for the language bindings.
-     '$(TARGET)-meson' \
--        --default-library=shared \
-+        --default-library=static \
-         --buildtype=release \
-         --strip \
-         --libdir='lib' \
