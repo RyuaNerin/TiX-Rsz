@@ -58,7 +58,7 @@ index d6eb112..702beaa 100644
          --with-zlib \
          CFLAGS="$(CFLAGS) -DCMS_RELY_ON_WINDOWS_STATIC_MUTEX_INIT"
      $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)' $(MXE_DISABLE_PROGRAMS)
-@@ -478,6 +485,9 @@ define imagemagick_BUILD
+@@ -478,6 +485,10 @@ define imagemagick_BUILD
 
      cd '$(BUILD_DIR)' && $(SOURCE_DIR)/configure \
          $(MXE_CONFIGURE_OPTS) \
@@ -68,12 +68,13 @@ index d6eb112..702beaa 100644
          --without-fftw \
          --without-fontconfig \
          --without-gvc \
++        --without-freetype \
 @@ -499,7 +509,7 @@ define imagemagick_BUILD
          --disable-largefile \
          --disable-opencl \
          --disable-openmp \
 -        CFLAGS="$(CFLAGS) -DMAGICKCORE_EXCLUDE_DEPRECATED"
-+        CFLAGS="$(CFLAGS) -DMAGICKCORE_EXCLUDE_DEPRECATED -fPIC"
++        CFLAGS="-fPIC $(CFLAGS) -DMAGICKCORE_EXCLUDE_DEPRECATED"
      $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)' $(MXE_DISABLE_CRUFT)
      $(MAKE) -C '$(BUILD_DIR)' -j 1 install $(MXE_DISABLE_CRUFT)
  endef

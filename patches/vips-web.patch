@@ -7,8 +7,8 @@ index db099bf..eaefb23 100644
  $(PKG)_FILE     := vips-$($(PKG)_VERSION).tar.gz
  $(PKG)_DEPS     := cc libwebp librsvg giflib glib pango libgsf \
 -                   libjpeg-turbo tiff lcms libexif libpng libspng orc
-+                   libjpeg-turbo tiff lcms libexif libpng libspng orc \
-+                   libheif imagemagick
++                   libjpeg-turbo tiff lcms libexif libpng libspng orc
+#+                   libheif imagemagick
  
  define $(PKG)_PRE_CONFIGURE
      # Copy some files to the packaging directory
