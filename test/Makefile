@@ -1,11 +1,8 @@
 TARGET_DIR  := /data/bin
-TARGET_NAME := TiXRsz.dll
+TARGET_NAME := TiXRsz_test.exe
 
 SRCS := \
-	tix_expert.cpp \
-	tix_rsz.cpp \
-	tix_rsz_gif.cpp \
-	tix_rsz_img.cpp
+	tix_test.cpp
 
 OBJS := $(patsubst %,%.o,$(basename $(SRCS)))
 
@@ -27,10 +24,11 @@ CXXFLAGS := \
 
 LDFLAGS := \
 	$(COMMON_FLAGS) \
-	-shared \
 	-static-libgcc \
 	$(LIBRARY_LIB) \
-	-Wl,-s,-x,--subsystem,windows,--out-implib,"$(TARGET_DIR)/$(subst .dll,.a,$(TARGET_NAME))"
+	-L"$(TARGET_DIR)" \
+	-l"TiXRsz" \
+	-Wl,--subsystem,console
 
 RM = rm -f
 
@@ -42,6 +40,10 @@ $(TARGET_NAME): $(OBJS)
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+.PHONY: test
+test:
+	wine "$(TARGET_DIR)/$(TARGET_NAME)"
 
 .PHONY: clean
 clean:

@@ -3,7 +3,7 @@
 #include <iostream>
 #include <string>
 
-#include "tix_expert.h"
+#include "tix_import.h"
 
 bool test(const char* path, const char* path_out);
 
@@ -21,11 +21,11 @@ typedef struct _DATA
 
 size_t f_write(const void* userdata, const uint8_t* data, size_t length)
 {
-    ((DATA*)userdata)->fs_buf->sputn((const char*)data, length);
+    return ((DATA*)userdata)->fs_buf->sputn((const char*)data, length);
 }
 size_t f_read(const void* userdata, uint8_t* data, size_t length)
 {
-    ((DATA*)userdata)->fs_buf->sgetn((char*)data, length);
+    return ((DATA*)userdata)->fs_buf->sgetn((char*)data, length);
 }
 void f_flush(const void* userdata)
 {
@@ -35,7 +35,7 @@ void f_trunc(const void* userdata)
     std::experimental::filesystem::resize_file(((DATA*)userdata)->path, 0);
 }
 
-size_t f_seek(const const void* userdata, size_t offset, TIX_WRENCE whence)
+size_t f_seek(const void* userdata, size_t offset, TIX_WRENCE whence)
 {
     const auto d = ((DATA*)userdata);
 
@@ -112,6 +112,8 @@ bool test(const char* path, const char* path_out)
     std::cout << "error_code : " << out.out_error_code << std::endl;
     std::cout << "extension  : " << out.out_extension << std::endl;
     std::cout << "file-size  : " << get_file_size_by_eic(path) << " -> " << get_file_size_by_eic(path_out) << std::endl;
+
+    return out.out_succeed;
 }
 
 std::string get_file_size_by_eic(const char* path)
@@ -122,9 +124,9 @@ std::string get_file_size_by_eic(const char* path)
     if (size < 1000)
         std::sprintf(result, "%llu Bytes", size);
     else if (size < 1000 * 1024)
-        std::sprintf(result, "%.2d KiB", (double)size / 1024);
+        std::sprintf(result, "%.2lf KiB", (double)size / 1024);
     else
-        std::sprintf(result, "%.2d MiB", (double)size / 1024 / 1024);
+        std::sprintf(result, "%.2lf MiB", (double)size / 1024 / 1024);
 
     return result;
 }

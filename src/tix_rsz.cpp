@@ -15,7 +15,7 @@
 
 using namespace tix;
 
-static void tix::init()
+void tix::init()
 {
     vips_init("TiXRsz");
 }

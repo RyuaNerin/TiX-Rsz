@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 if ! [ -x "$(command -v docker)" ]; then
     echo "Please install docker"
@@ -15,7 +15,7 @@ on_err() {
 }
 trap on_err ERR
 
-# Build libvips web x86_64 static
+# Build libvips web x86_64 static + imagemagick
 if ! [ -d "vips-dev" ]; then
     if ! [ -d "build-win64-mxe" ]; then
         git clone -b 'v8.10.1' --single-branch https://github.com/libvips/build-win64-mxe
@@ -28,16 +28,19 @@ if ! [ -d "vips-dev" ]; then
     ( \
         cd build-win64-mxe; \
         for i in ../patches/*.patch; do \
+            echo "PATCH : $i"; \
             patch -l -p1 --forward < "$i" || true; \
+            echo; \
         done; \
         ./build.sh web x86_64 static \
     )
-    unzip build-win64-mxe/build/*.zip -d . || exit 1
 
-    mv "$(find `pwd` -maxdepth 1 -type d -iname 'vips-dev-*')" vips-dev
+    cp build-win64-mxe/build/*.zip .
+
+    find "${PWD}/vips-dev/lib/" -type f -exec \
+            sed -i 's/\/data\/mxe\//\/data\/build\-win64\-mxe\/build\/mxe\//g' {} +
+    
 fi
-
-exit 0
 
 ##################################################
 docker pull buildpack-deps:buster

@@ -1,19 +1,40 @@
-The file will have its original line endings in your working directory
+diff --git a/Makefile.am b/Makefile.am
+index e5f6203..7cea3c9 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -1,11 +1,9 @@
+ SUBDIRS = \
+ 	libvips \
+ 	cplusplus \
+-	tools \
+ 	po \
+ 	man \
+ 	doc \
+-	test \
+ 	fuzz
+ 
+ EXTRA_DIST = \
+diff --git a/Makefile.in b/Makefile.in
+index 2029423..45a3175 100644
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -511,11 +511,9 @@ vips_introspection_sources = @vips_introspection_sources@
+ SUBDIRS = \
+ 	libvips \
+ 	cplusplus \
+-	tools \
+ 	po \
+ 	man \
+ 	doc \
+-	test \
+ 	fuzz
+ 
+ EXTRA_DIST = \
 diff --git a/configure.ac b/configure.ac
-index c983e81..69a6417 100644
+index c983e81..1aa2e2b 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -227,9 +227,7 @@ AC_DEFINE_UNQUOTED(VIPS_ICC_DIR,"$profile_dir",[default directory for ICC profil
- # we want largefile support, if possible
- AC_SYS_LARGEFILE
- 
--# we use libtool
--LT_INIT
- 
- # Checks for programs.
- AC_PROG_AWK
- AC_PROG_CC
-@@ -320,19 +317,7 @@ AC_HEADER_STDC
+@@ -320,19 +320,7 @@ AC_HEADER_STDC
  AC_CHECK_HEADERS([errno.h math.h fcntl.h limits.h stdlib.h string.h sys/file.h sys/ioctl.h sys/param.h sys/time.h sys/mman.h sys/types.h sys/stat.h unistd.h io.h direct.h windows.h])
  
  # uncomment to change which libs we build
@@ -34,23 +55,20 @@ index c983e81..69a6417 100644
  
  # Checks for typedefs, structures, and compiler characteristics.
  AC_C_RESTRICT
-@ -1345,19 +1329,6 @@ AC_CONFIG_FILES([
-        libvips/mosaicing/Makefile
-        libvips/create/Makefile
-        libvips/resample/Makefile
--       cplusplus/include/Makefile
--       cplusplus/include/vips/Makefile
--       cplusplus/Makefile
--       tools/Makefile
--       tools/batch_crop
--       tools/batch_image_convert
--       tools/batch_rubber_sheet
--       tools/light_correct
--       tools/shrink_width
--       test/Makefile
--       test/variables.sh
--       test/test-suite/Makefile
--       test/test-suite/helpers/Makefile
-        man/Makefile
-        doc/Makefile
-        doc/libvips-docs.xml
+@@ -1348,16 +1336,6 @@ AC_CONFIG_FILES([
+ 	cplusplus/include/Makefile
+ 	cplusplus/include/vips/Makefile
+ 	cplusplus/Makefile
+-	tools/Makefile
+-	tools/batch_crop
+-	tools/batch_image_convert
+-	tools/batch_rubber_sheet
+-	tools/light_correct
+-	tools/shrink_width
+-	test/Makefile
+-	test/variables.sh
+-	test/test-suite/Makefile
+-	test/test-suite/helpers/Makefile
+ 	man/Makefile
+ 	doc/Makefile
+ 	doc/libvips-docs.xml

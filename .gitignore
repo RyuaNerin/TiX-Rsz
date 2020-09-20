@@ -1,6 +1,8 @@
 libwebp*
-build-win64-mxe
-vips-dev
+build-win64-mxe/
+mxe/
+vips-dev/
+*.zip
 *.dll
 *.o
 *.a

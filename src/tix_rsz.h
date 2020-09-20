@@ -12,7 +12,7 @@
 
 namespace tix
 {
-    static void init();
+    void init();
 
     class Processor
     {

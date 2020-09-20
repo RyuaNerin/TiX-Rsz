@@ -1,65 +1,9 @@
 diff --git a/build/overrides.mk b/build/overrides.mk
-index d6eb112..702beaa 100644
+index d6eb112..80ba02f 100644
 --- a/build/overrides.mk
 +++ b/build/overrides.mk
-@@ -314,6 +314,7 @@ define gettext_BUILD
-     cd '$(SOURCE_DIR)' && autoreconf -fi
-     cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/gettext-runtime/configure' \
-         $(MXE_CONFIGURE_OPTS) \
-+        --enable-static --disable-shared \
-         --disable-java \
-         --disable-native-java \
-         --disable-csharp \
-@@ -351,6 +352,7 @@ endef
- define harfbuzz_BUILD
-     '$(TARGET)-meson' \
-+        --default-library=static  \
-         --buildtype=release \
-         --strip \
-         --libdir='lib' \
-         --bindir='bin' \
-@@ -391,6 +394,7 @@ define libgsf_BUILD
+@@ -478,8 +478,12 @@ define imagemagick_BUILD
  
-     cd '$(BUILD_DIR)' && $(SOURCE_DIR)/configure \
-         $(MXE_CONFIGURE_OPTS) \
-+        --enable-static --disable-shared \
-         --without-gdk-pixbuf \
-         --without-python \
-         --without-bz2 \
-@@ -408,6 +412,7 @@ endef
- define gdk-pixbuf_BUILD
-     '$(TARGET)-meson' \
-+        --default-library=static \
-         --buildtype=release \
-         --strip \
-         --libdir='lib' \
-         --bindir='bin' \
-@@ -427,6 +432,7 @@ endef
- define pixman_BUILD
-     '$(TARGET)-meson' \
-+        --default-library=static \
-         --buildtype=release \
-         --strip \
-         --libdir='lib' \
-         --bindir='bin' \
-@@ -443,6 +449,7 @@ endef
- define fribidi_BUILD
-     '$(TARGET)-meson' \
-+        --default-library=static \
-         --buildtype=release \
-         --strip \
-         --libdir='lib' \
-         --bindir='bin' \
-@@ -461,6 +468,7 @@ endef
- define lcms_BUILD
-     cd '$(BUILD_DIR)' && $(SOURCE_DIR)/configure \
-         $(MXE_CONFIGURE_OPTS) \
-+        --enable-static --disable-shared \
-         --with-zlib \
-         CFLAGS="$(CFLAGS) -DCMS_RELY_ON_WINDOWS_STATIC_MUTEX_INIT"
-     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)' $(MXE_DISABLE_PROGRAMS)
-@@ -478,6 +485,10 @@ define imagemagick_BUILD
-
      cd '$(BUILD_DIR)' && $(SOURCE_DIR)/configure \
          $(MXE_CONFIGURE_OPTS) \
 +        --enable-static=yes \
@@ -67,9 +11,11 @@ index d6eb112..702beaa 100644
 +        --disable-shared \
          --without-fftw \
          --without-fontconfig \
-         --without-gvc \
 +        --without-freetype \
-@@ -499,7 +509,7 @@ define imagemagick_BUILD
+         --without-gvc \
+         --without-heic \
+         --without-ltdl \
+@@ -499,7 +503,7 @@ define imagemagick_BUILD
          --disable-largefile \
          --disable-opencl \
          --disable-openmp \
@@ -78,59 +24,13 @@ index d6eb112..702beaa 100644
      $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)' $(MXE_DISABLE_CRUFT)
      $(MAKE) -C '$(BUILD_DIR)' -j 1 install $(MXE_DISABLE_CRUFT)
  endef
-@@ -523,6 +532,7 @@ define fontconfig_BUILD
-     cd '$(SOURCE_DIR)' && autoreconf -fi
-     cd '$(BUILD_DIR)' && $(SOURCE_DIR)/configure \
-         $(MXE_CONFIGURE_OPTS) \
-+        --enable-static --disable-shared \
-         --with-arch='$(TARGET)' \
-         --with-expat='$(PREFIX)/$(TARGET)' \
-         --disable-docs \
-@@ -537,6 +547,7 @@ endef
- define pango_BUILD
+@@ -742,7 +746,8 @@ define glib_BUILD
+     # build as shared library, since we need `libgobject-2.0-0.dll`
+     # and `libglib-2.0-0.dll` for the language bindings.
      '$(TARGET)-meson' \
+-        --default-library=shared \
 +        --default-library=static \
++        -Dforce_posix_threads=true \
          --buildtype=release \
          --strip \
          --libdir='lib' \
-         --libexecdir='bin' \
-@@ -560,6 +571,7 @@ define librsvg_BUILD
- 
-     cd '$(BUILD_DIR)' && $(SOURCE_DIR)/configure \
-         $(MXE_CONFIGURE_OPTS) \
-+        --enable-static --disable-shared \
-         --disable-pixbuf-loader \
-         --disable-introspection \
-         --disable-tools \
-@@ -623,6 +635,7 @@ endef
- define tiff_BUILD
-     cd '$(BUILD_DIR)' && $(SOURCE_DIR)/configure \
-         $(MXE_CONFIGURE_OPTS) \
-+        --enable-static --disable-shared \
-         --without-x \
-         --disable-cxx \
-         --disable-lzma
-@@ -634,6 +647,7 @@ endef
- define libwebp_BUILD
-     cd '$(BUILD_DIR)' && $(SOURCE_DIR)/configure \
-         $(MXE_CONFIGURE_OPTS) \
-+        --enable-static --disable-shared \
-         --disable-gl \
-         --disable-sdl \
-         --disable-png \
-@@ -662,6 +676,7 @@ define cairo_BUILD
- 
-     cd '$(BUILD_DIR)' && $(SOURCE_DIR)/configure \
-         $(MXE_CONFIGURE_OPTS) \
-+        --enable-static --disable-share \
-         --disable-gl \
-         --disable-test-surfaces \
-         --disable-gcov \
-@@ -714,6 +729,7 @@ define libxml2_BUILD
- 
-     cd '$(BUILD_DIR)' && $(SOURCE_DIR)/configure \
-         $(MXE_CONFIGURE_OPTS) \
-+        --enable-static --disable-shared \
-         --with-zlib='$(PREFIX)/$(TARGET)/lib' \
-         --without-lzma \
-         --without-debug \
