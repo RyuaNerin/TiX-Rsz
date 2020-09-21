@@ -1,4 +1,4 @@
-TARGET_DIR  := /data/bin
+TARGET_DIR  := ../bin
 TARGET_NAME := TiXRsz_test.exe
 
 SRCS := \
@@ -6,8 +6,8 @@ SRCS := \
 
 OBJS := $(patsubst %,%.o,$(basename $(SRCS)))
 
-CXX := x86_64-w64-mingw32-g++-posix
-LD  := x86_64-w64-mingw32-g++-posix
+CXX := /mingw64/bin/g++
+LD  := /mingw64/bin/g++
 
 COMMON_FLAGS := \
 	-O2 \
@@ -15,8 +15,8 @@ COMMON_FLAGS := \
 	-m64 \
 	-std=c++17
 
-LIBRARY_INC := $(shell x86_64-w64-mingw32-pkg-config --static --cflags vips vips-cpp)
-LIBRARY_LIB := $(shell x86_64-w64-mingw32-pkg-config --static --libs   vips vips-cpp)
+LIBRARY_INC := $(shell pkg-config --static --cflags vips vips-cpp)
+LIBRARY_LIB := $(shell pkg-config --static --libs   vips vips-cpp) -lgif -lstdc++fs
 
 CXXFLAGS := \
 	$(COMMON_FLAGS) \
@@ -24,7 +24,7 @@ CXXFLAGS := \
 
 LDFLAGS := \
 	$(COMMON_FLAGS) \
-	-static-libgcc \
+	-static \
 	$(LIBRARY_LIB) \
 	-L"$(TARGET_DIR)" \
 	-l"TiXRsz" \

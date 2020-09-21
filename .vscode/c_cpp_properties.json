@@ -1,14 +1,14 @@
 {
     "configurations": [
         {
-            "name": "GCC",
+            "name": "mingw64",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${workspaceFolder}/vips-dev/include",
-                "${workspaceFolder}/vips-dev/include/glib-2.0",
-                "${workspaceFolder}/vips-dev/include/ImageMagick-6",
-                "${workspaceFolder}/vips-dev/lib/glib-2.0/include",
-                "${workspaceFolder}/src/"
+                "${workspaceFolder}/vips-build/include",
+                "${workspaceFolder}/src",
+                "${workspaceFolder}/test",
+                "C:/msys64/mingw64/include/glib-2.0",
+                "C:/msys64/mingw64/include/ImageMagick-7"
             ],
             "defines": [
                 "_DEBUG",
