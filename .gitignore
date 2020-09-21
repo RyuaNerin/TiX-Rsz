@@ -1,11 +1,4 @@
-libwebp*
-build-win64-mxe/
-mxe/
-vips-*/
-*.zip
-*.dll
+build/
+
 *.o
 *.a
-obj
-bin
-*.gz

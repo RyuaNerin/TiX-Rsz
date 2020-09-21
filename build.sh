@@ -2,9 +2,6 @@
 
 . ./var.sh
 
-# CLEAR
-rm -rf vips-*
-
 pacman -Sy --needed \
     autoconf \
     automake-wrapper \
@@ -15,6 +12,7 @@ pacman -Sy --needed \
     \
     ${MINGW_PACKAGE_PREFIX}-gcc \
     ${MINGW_PACKAGE_PREFIX}-gobject-introspection \
+    ${MINGW_PACKAGE_PREFIX}-meson \
     ${MINGW_PACKAGE_PREFIX}-pkg-config \
     \
     ${MINGW_PACKAGE_PREFIX}-cairo \
@@ -45,48 +43,84 @@ pacman -Sy --needed \
     ${MINGW_PACKAGE_PREFIX}-poppler \
     ${MINGW_PACKAGE_PREFIX}-zlib
 
-( \
-    wget https://github.com/libvips/libvips/releases/download/${VIPS_TAG}/${VIPS_TAR_NAME} && \
-    echo "${VIPS_TAR_HASH} *${VIPS_TAR_NAME}" | sha256sum -c - && \
-    tar xzf "${VIPS_TAR_NAME}" && \
-    cd "${VIPS_DIR}" && \
-    for i in ../patches/libvips.patch; do \
-        patch -l -p1 --forward < "$i" || true; \
-    done && \
-    mkdir -p ${VIPS_BIN_DIR} && \
-    ./configure \
-        --prefix="${VIPS_BIN_DIR}" \
-        --build=${MINGW_CHOST} \
-        --host=${MINGW_CHOST} \
-        --target=${MINGW_CHOST} \
-        --enable-static \
-        --disable-shared \
-        --enable-debug=no \
-        --disable-introspection \
-        --disable-deprecated \
-        --without-openslide \
-        --without-pdfium \
-        --without-cfitsio \
-        --without-OpenEXR \
-        --without-nifti \
-        --without-matio \
-        --without-ppm \
-        --without-analyze \
-        --without-radiance \
-        --without-imagequant \
-        lt_cv_deplibs_check_method="pass_all" && \
-    make ${MAKE_JOBS} && \
-    make install \
-) || exit
+# clear
+rm -rf "${BUILD_DIR}"
+mkdir -p "${BUILD_DIR}/bin"
+mkdir -p "${BUILD_DIR}/src"
 
-( \
-    cd src && \
-    make clean && \
-    make ${MAKE_JOBS} \
-) || exit
+####################################################################################################
+# orc
+cd "${BUILD_DIR}/src"
 
-( \
-    cd test && \
-    make clean && \
-    make ${MAKE_JOBS} \
-) || exit
+wget "${ORC_TAR}"
+echo "${ORC_TAR_HASH} *${ORC_TAR_NAME}" | sha256sum -c -
+tar Jxf "${ORC_TAR_NAME}" -C "${BUILD_DIR}/src"
+
+cd "${BUILD_DIR}/src/${ORC_DIR}"
+for i in ${BASE_DIR}/patches/orc*.patch; do
+    patch -l -p1 --forward < "$i"
+done
+${MINGW_PREFIX}/bin/meson \
+    --buildtype=release \
+    --strip \
+    --libdir='lib' \
+    --includedir='include' \
+    -Ddefault_library=static \
+    -Dbenchmarks=disabled \
+    -Dexamples=disabled \
+    -Dgtk_doc=disabled \
+    -Dtests=disabled \
+    -Dauto_features=enabled \
+    "${BUILD_DIR}/src/${ORC_DIR}-build"
+
+cd "${BUILD_DIR}/src/${ORC_DIR}-build"
+ninja
+DESTDIR="${BUILD_DIR}" ninja install
+
+####################################################################################################
+# libvips
+cd "${BUILD_DIR}/src"
+
+wget "${VIPS_TAR}"
+echo "${VIPS_HASH} *${VIPS_TAR_NAME}" | sha256sum -c -
+tar xzf "${VIPS_TAR_NAME}" -C "${BUILD_DIR}/src"
+
+cd "${BUILD_DIR}/src/${VIPS_DIR}"
+for i in ${BASE_DIR}/patches/libvips*.patch; do
+    patch -l -p1 --forward < "$i"
+done
+./configure \
+    --prefix="${BUILD_DIR}" \
+    --build=${MINGW_CHOST} \
+    --host=${MINGW_CHOST} \
+    --target=${MINGW_CHOST} \
+    --enable-static \
+    --disable-shared \
+    --enable-debug=no \
+    --disable-introspection \
+    --disable-deprecated \
+    --without-openslide \
+    --without-pdfium \
+    --without-cfitsio \
+    --without-OpenEXR \
+    --without-nifti \
+    --without-matio \
+    --without-ppm \
+    --without-analyze \
+    --without-radiance \
+    --without-imagequant \
+    --without_poppler \
+    lt_cv_deplibs_check_method="pass_all"
+
+make ${MAKE_JOBS}
+make install
+
+####################################################################################################
+
+cd "${BASE_DIR}/src"
+make clean
+make ${MAKE_JOBS}
+
+cd "${BASE_DIR}/test"
+make clean
+make ${MAKE_JOBS}
