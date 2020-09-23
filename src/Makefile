@@ -16,7 +16,8 @@ COMMON_FLAGS := \
 	-O2 \
 	-Wall \
 	-m64 \
-	-std=c++17
+	-std=c++17 \
+	-fdata-sections -ffunction-sections
 
 LIBRARY_INC := $(shell pkg-config --static --cflags vips vips-cpp)
 LIBRARY_LIB := $(shell pkg-config --static --libs   vips vips-cpp) -lgif -lstdc++fs
@@ -29,7 +30,7 @@ LDFLAGS := \
 	$(COMMON_FLAGS) \
 	-static \
 	$(LIBRARY_LIB) \
-	-Wl,-s,-x,--subsystem,windows,--out-implib,"$(TARGET_DIR)/$(subst .dll,.a,$(TARGET_NAME))"
+	-Wl,-s,-x,--gc-sections,--allow-multiple-definition,--subsystem,windows,--out-implib,"$(TARGET_DIR)/$(subst .dll,.a,$(TARGET_NAME))"
 
 RM = rm -f
 

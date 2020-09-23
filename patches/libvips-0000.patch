@@ -2,14 +2,14 @@ diff --git a/Makefile.am b/Makefile.am
 index e5f6203..7cea3c9 100644
 --- a/Makefile.am
 +++ b/Makefile.am
-@@ -1,11 +1,9 @@
+@@ -1,11 +1,7 @@
  SUBDIRS = \
  	libvips \
  	cplusplus \
 -	tools \
  	po \
- 	man \
- 	doc \
+-	man \
+-	doc \
 -	test \
  	fuzz
  
@@ -18,14 +18,14 @@ diff --git a/Makefile.in b/Makefile.in
 index 2029423..45a3175 100644
 --- a/Makefile.in
 +++ b/Makefile.in
-@@ -511,11 +511,9 @@ vips_introspection_sources = @vips_introspection_sources@
+@@ -511,11 +511,7 @@ vips_introspection_sources = @vips_introspection_sources@
  SUBDIRS = \
  	libvips \
  	cplusplus \
 -	tools \
  	po \
- 	man \
- 	doc \
+-	man \
+-	doc \
 -	test \
  	fuzz
  
@@ -55,7 +55,7 @@ index c983e81..1aa2e2b 100644
  
  # Checks for typedefs, structures, and compiler characteristics.
  AC_C_RESTRICT
-@@ -1348,16 +1336,6 @@ AC_CONFIG_FILES([
+@@ -1348,18 +1336,5 @@ AC_CONFIG_FILES([
  	cplusplus/include/Makefile
  	cplusplus/include/vips/Makefile
  	cplusplus/Makefile
@@ -69,6 +69,8 @@ index c983e81..1aa2e2b 100644
 -	test/variables.sh
 -	test/test-suite/Makefile
 -	test/test-suite/helpers/Makefile
- 	man/Makefile
- 	doc/Makefile
- 	doc/libvips-docs.xml
+-	man/Makefile
+-	doc/Makefile
+-	doc/libvips-docs.xml
+ 	po/Makefile.in
+ 	fuzz/Makefile

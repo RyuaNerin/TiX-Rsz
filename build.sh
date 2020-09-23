@@ -62,26 +62,26 @@ mkdir -p "${BUILD_DIR}/src" || true
 
 ####################################################################################################
 # orc
-ORC_TAR_NAME=$(basename ${ORC_TAR})
-ORC_DIR=$(basename ${ORC_TAR} ${ORC_EXT})
+[ -z "${ORC_TAR_NAME}" ] && ORC_TAR_NAME=$(basename ${ORC_TAR})
+ORC_DIR=$(basename ${ORC_TAR_NAME} ${ORC_EXT})
 if [ ! -f "${BUILD_DIR}/b-${ORC_DIR}" ]; then
     cd "${BUILD_DIR}/src"
 
     rm -rf "${ORC_TAR_NAME}" "${ORC_DIR}" "${ORC_DIR}-build" || true
 
-    wget "${ORC_TAR}"
-    echo "${ORC_TAR_HASH} *$(basename ${ORC_TAR})" | sha256sum -c -
+    wget "${ORC_TAR}" -O "${ORC_TAR_NAME}"
+    echo "${ORC_TAR_HASH} *${ORC_TAR_NAME}" | sha256sum -c -
     tar Jxf "${ORC_TAR_NAME}" -C "${BUILD_DIR}/src"
 
     cd "${BUILD_DIR}/src/${ORC_DIR}"
-    for i in ${BASE_DIR}/patches/orc*.patch; do
-        patch -p1 < "$i"
-    done
+    find "${BASE_DIR}/patches/" -type f -name 'orc*.patch' -print0 | sort -z | xargs -t -0 -n 1 patch -p1 -i
     ${MINGW_PREFIX}/bin/meson \
         --buildtype=release \
         --strip \
         --prefix "${BUILD_DIR}" \
         --libdir='lib' \
+        --bindir='bin' \
+        --libexecdir='bin' \
         --includedir='include' \
         -Ddefault_library=static \
         -Dbenchmarks=disabled \
@@ -96,27 +96,67 @@ if [ ! -f "${BUILD_DIR}/b-${ORC_DIR}" ]; then
     ninja install
 
     touch "${BUILD_DIR}/b-${ORC_DIR}"
-    exit
+fi
+
+####################################################################################################
+# gdk-pixbuf
+[ -z "${GDK_PIXBUF_TAR_NAME}" ] && GDK_PIXBUF_TAR_NAME=$(basename ${GDK_PIXBUF_TAR})
+GDK_PIXBUF_DIR=$(basename ${GDK_PIXBUF_TAR_NAME} ${GDK_PIXBUF_EXT})
+if [ ! -f "${BUILD_DIR}/b-${GDK_PIXBUF_DIR}" ]; then
+    cd "${BUILD_DIR}/src"
+
+    rm -rf "${GDK_PIXBUF_TAR_NAME}" "${GDK_PIXBUF_DIR}" "${GDK_PIXBUF_DIR}-build" || true
+
+    wget "${GDK_PIXBUF_TAR}" -O "${GDK_PIXBUF_TAR_NAME}"
+    echo "${GDK_PIXBUF_TAR_HASH} *${GDK_PIXBUF_TAR_NAME}" | sha256sum -c -
+    tar Jxf "${GDK_PIXBUF_TAR_NAME}" -C "${BUILD_DIR}/src" || true
+    tar Jxf "${GDK_PIXBUF_TAR_NAME}" -C "${BUILD_DIR}/src"
+
+    cd "${BUILD_DIR}/src/${GDK_PIXBUF_DIR}"
+    find "${BASE_DIR}/patches/" -type f -name 'gdk-pixbuf*.patch' -print0 | sort -z | xargs -t -0 -n 1 patch -p1 -i
+
+    ${MINGW_PREFIX}/bin/meson \
+        --buildtype=release \
+        --strip \
+        --prefix "${BUILD_DIR}" \
+        --libdir='lib' \
+        --bindir='bin' \
+        --libexecdir='bin' \
+        --includedir='include' \
+        -Ddefault_library=static \
+        -Dbuiltin_loaders='jpeg,png,tiff' \
+        -Dnative_windows_loaders=true \
+        -Ddocs=false \
+        -Dman=false \
+        -Dgir=false \
+        -Dinstalled_tests=false \
+        -Djasper=true \
+        -Drelocatable=true \
+        -Dx11=false \
+        "${BUILD_DIR}/src/${GDK_PIXBUF_DIR}-build"
+
+    cd "${BUILD_DIR}/src/${GDK_PIXBUF_DIR}-build"
+    ninja
+    ninja install
+
+    touch "${BUILD_DIR}/b-${GDK_PIXBUF_DIR}"
 fi
 
 ####################################################################################################
 # poppler-glib
-#<<'EOF'
-POPPLER_TAR_NAME=$(basename ${POPPLER_TAR})
-POPPLER_DIR=$(basename ${POPPLER_TAR} ${POPPLER_EXT})
+[ -z "${POPPLER_TAR_NAME}" ] && POPPLER_TAR_NAME=$(basename ${POPPLER_TAR})
+POPPLER_DIR=$(basename ${POPPLER_TAR_NAME} ${POPPLER_EXT})
 if [ ! -f "${BUILD_DIR}/b-${POPPLER_DIR}" ]; then
     cd "${BUILD_DIR}/src"
 
     rm -rf "${POPPLER_TAR_NAME}" "${POPPLER_DIR}" "${POPPLER_DIR}-build" || true
 
-    wget "${POPPLER_TAR}"
-    echo "${POPPLER_TAR_HASH} *$(basename ${POPPLER_TAR})" | sha256sum -c -
+    wget "${POPPLER_TAR}" -O "${POPPLER_TAR_NAME}"
+    echo "${POPPLER_TAR_HASH} *${POPPLER_TAR_NAME}" | sha256sum -c -
     tar Jxf "${POPPLER_TAR_NAME}" -C "${BUILD_DIR}/src"
 
     cd "${BUILD_DIR}/src/${POPPLER_DIR}"
-    for i in ${BASE_DIR}/patches/poppler*.patch; do
-        patch -p1 < "$i"
-    done
+    find "${BASE_DIR}/patches/" -type f -name 'poppler*.patch' -print0 | sort -z | xargs -t -0 -n 1 patch -p1 -i
 
     mkdir "${BUILD_DIR}/src/${POPPLER_DIR}-build"
     cd "${BUILD_DIR}/src/${POPPLER_DIR}-build"
@@ -142,6 +182,7 @@ if [ ! -f "${BUILD_DIR}/b-${POPPLER_DIR}" ]; then
         -DENABLE_LIBTIFF=ON \
         -DENABLE_NSS3=ON \
         -DENABLE_QT5=OFF \
+        -DENABLE_SPLASH=OFF \
         -DENABLE_UNSTABLE_API_ABI_HEADERS=ON \
         -DENABLE_UTILS=OFF \
         -DENABLE_ZLIB_UNCOMPRESS=OFF \
@@ -152,27 +193,54 @@ if [ ! -f "${BUILD_DIR}/b-${POPPLER_DIR}" ]; then
     make install
 
     touch "${BUILD_DIR}/b-${POPPLER_DIR}"
-    exit
 fi
-#EOF
+
+####################################################################################################
+# libbrotli
+[ -z "${BROTLI_TAR_NAME}" ] && BROTLI_TAR_NAME=$(basename ${BROTLI_TAR})
+BROTLI_DIR=$(basename ${BROTLI_TAR_NAME} ${BROTLI_EXT})
+if [ ! -f "${BUILD_DIR}/b-${BROTLI_DIR}" ]; then
+    cd "${BUILD_DIR}/src"
+
+    rm -rf "${BROTLI_TAR_NAME}" "${BROTLI_DIR}" "${BROTLI_DIR}-build" || true
+
+    wget "${BROTLI_TAR}" -O "${BROTLI_TAR_NAME}"
+    echo "${BROTLI_TAR_HASH} *${BROTLI_TAR_NAME}" | sha256sum -c -
+    tar xzf "${BROTLI_TAR_NAME}" -C "${BUILD_DIR}/src"
+
+    cd "${BUILD_DIR}/src/${BROTLI_DIR}"
+    find "${BASE_DIR}/patches/" -type f -name 'brotli*.patch' -print0 | sort -z | xargs -t -0 -n 1 patch -p1 -i
+
+    mkdir "${BUILD_DIR}/src/${BROTLI_DIR}-build"
+    cd "${BUILD_DIR}/src/${BROTLI_DIR}-build"
+
+    "${MINGW_PREFIX}/bin/cmake.exe" \
+        -G"MSYS Makefiles" \
+        -DCMAKE_BUILD_TYPE=release \
+        -DCMAKE_INSTALL_PREFIX=${BUILD_DIR} \
+        -DBUILD_SHARED_LIBS=OFF \
+        "${BUILD_DIR}/src/${POPPLER_DIR}"
+    CC=${CC} make ${MAKE_JOBS}
+    make install
+
+    touch "${BUILD_DIR}/b-${BROTLI_DIR}"
+fi
 
 ####################################################################################################
 # libvips
-VIPS_TAR_NAME=$(basename ${VIPS_TAR})
-VIPS_DIR=$(basename ${VIPS_TAR} ${VIPS_EXT})
+[ -z "${VIPS_TAR_NAME}" ] && VIPS_TAR_NAME=$(basename ${VIPS_TAR})
+VIPS_DIR=$(basename ${VIPS_TAR_NAME} ${VIPS_EXT})
 if [ ! -f "${BUILD_DIR}/b-${VIPS_DIR}" ]; then
     cd "${BUILD_DIR}/src"
 
     rm -rf "${VIPS_TAR_NAME}" "${VIPS_DIR}" "${VIPS_DIR}-build" || true
 
-    wget "${VIPS_TAR}"
-    echo "${VIPS_TAR_HASH} *$(basename ${VIPS_TAR})" | sha256sum -c -
+    wget "${VIPS_TAR}" -O "${VIPS_TAR_NAME}"
+    echo "${VIPS_TAR_HASH} *${VIPS_TAR_NAME}" | sha256sum -c -
     tar xzf "${VIPS_TAR_NAME}" -C "${BUILD_DIR}/src"
 
     cd "${BUILD_DIR}/src/${VIPS_DIR}"
-    for i in ${BASE_DIR}/patches/libvips*.patch; do
-        patch -p1 < "$i"
-    done
+    find "${BASE_DIR}/patches/" -type f -name 'libvips*.patch' -print0 | sort -z | xargs -t -0 -n 1 patch -p1 -i
     ./configure \
         --prefix="${BUILD_DIR}" \
         --build=${MINGW_CHOST} \
@@ -199,7 +267,6 @@ if [ ! -f "${BUILD_DIR}/b-${VIPS_DIR}" ]; then
     make install
 
     touch "${BUILD_DIR}/b-${VIPS_DIR}"
-    exit
 fi
 
 ####################################################################################################
