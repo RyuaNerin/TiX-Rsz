@@ -166,6 +166,7 @@ if [ ! -f "${BUILD_DIR}/b-${POPPLER_DIR}" ]; then
         -G"MSYS Makefiles" \
         -DCMAKE_BUILD_TYPE=release \
         -DCMAKE_INSTALL_PREFIX=${BUILD_DIR} \
+        -DBUILD_STATIC_LIBS=ON \
         -DBUILD_SHARED_LIBS=OFF \
         -DBUILD_CPP_TESTS=OFF \
         -DBUILD_GTK_TESTS=OFF \
@@ -183,7 +184,6 @@ if [ ! -f "${BUILD_DIR}/b-${POPPLER_DIR}" ]; then
         -DENABLE_NSS3=ON \
         -DENABLE_QT5=OFF \
         -DENABLE_SPLASH=OFF \
-        -DENABLE_UNSTABLE_API_ABI_HEADERS=ON \
         -DENABLE_UTILS=OFF \
         -DENABLE_ZLIB_UNCOMPRESS=OFF \
         -DENABLE_ZLIB=ON \
@@ -216,10 +216,11 @@ if [ ! -f "${BUILD_DIR}/b-${BROTLI_DIR}" ]; then
 
     "${MINGW_PREFIX}/bin/cmake.exe" \
         -G"MSYS Makefiles" \
-        -DCMAKE_BUILD_TYPE=release \
+        -DCMAKE_BUILD_TYPE=Release \
         -DCMAKE_INSTALL_PREFIX=${BUILD_DIR} \
+        -DBUILD_STATIC_LIBS=ON \
         -DBUILD_SHARED_LIBS=OFF \
-        "${BUILD_DIR}/src/${POPPLER_DIR}"
+        "${BUILD_DIR}/src/${BROTLI_DIR}"
     CC=${CC} make ${MAKE_JOBS}
     make install
 

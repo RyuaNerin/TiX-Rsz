@@ -29,7 +29,9 @@ CXXFLAGS := \
 LDFLAGS := \
 	$(COMMON_FLAGS) \
 	-static \
+	-Wl,--start-group \
 	$(LIBRARY_LIB) \
+	-Wl,--end-group \
 	-Wl,-s,-x,--gc-sections,--allow-multiple-definition,--subsystem,windows,--out-implib,"$(TARGET_DIR)/$(subst .dll,.a,$(TARGET_NAME))"
 
 RM = rm -f
