@@ -1,97 +1,7 @@
-#!/bin/sh
-
-on_err() {
-    ERROR_CODE=$?
-    echo
-    echo
-    echo "error ${ERROR_CODE}"
-    echo "the command executing at the time of the error was"
-    echo "${BASH_COMMAND}"
-    echo "on line ${BASH_LINENO[0]}"
-    exit ${ERROR_CODE}
-}
-trap on_err ERR
-
-. ./var.sh
-
-pacman -Syq --needed --noconfirm \
-    autoconf \
-    automake-wrapper \
-    git \
-    libtool \
-    make \
-    patch \
-    wget \
-    \
-    ${MINGW_PACKAGE_PREFIX}-cmake \
-    ${MINGW_PACKAGE_PREFIX}-gcc \
-    ${MINGW_PACKAGE_PREFIX}-gobject-introspection \
-    ${MINGW_PACKAGE_PREFIX}-meson \
-    ${MINGW_PACKAGE_PREFIX}-pkg-config \
-
-# clear
-rm -rf "${BUILD_DIR}"
-mkdir -p "${BUILD_DIR}/bin" || true
-mkdir -p "${BUILD_DIR}/src" || true
-
-X() {
-    if [ -f $1 ] ; then
-        case $1 in
-            *.tar.bz2)   tar xvjf $1    ;;
-            *.tar.gz)    tar xvzf $1    ;;
-            *.tar.xz)    tar xvJf $1    ;;
-            *.bz2)       bunzip2 $1     ;;
-            *.rar)       unrar x $1     ;;
-            *.gz)        gunzip $1      ;;
-            *.tar)       tar xvf $1     ;;
-            *.tbz2)      tar xvjf $1    ;;
-            *.tgz)       tar xvzf $1    ;;
-            *.zip)       unzip $1       ;;
-            *.Z)         uncompress $1  ;;
-            *.7z)        7z x $1        ;;
-            *)           echo "Unable to extract '$1'" ;;
-        esac
-    else
-        echo "'$1' is not a valid file"
-    fi
-}
-
-BUILD() {
-    trap on_err ERR
-
-    PACKAGE_NAME=$1
-    PACKAGE_SRC_HASH=$2
-    PACKAGE_SRC_URL=$3
-    PACKAGE_SRC_NAME=$4
-
-    [ -z "${PACKAGE_SRC_NAME}" ] && PACKAGE_SRC_NAME=$(basename ${PACKAGE_SRC_URL})
-    PACKAGE_DIR_NAME="$(echo "${PACKAGE_SRC_NAME}" | sed -E 's/\.(tar\.bz2|tar\.gz|tar\.xz|bz2|rar|gz|tar|tbz2|tgz|zip|Z|7z)$//g')"
-
-    if [ ! -f "${BUILD_DIR}/build-${PACKAGE_NAME}" ]; then
-        cd "${BUILD_DIR}/src"
-
-        rm -rf "${PACKAGE_SRC_NAME}" "${PACKAGE_DIR_NAME}" "${PACKAGE_DIR_NAME}-build" || true
-
-        wget "${PACKAGE_SRC_URL}" -O "${PACKAGE_SRC_NAME}"
-        echo "${PACKAGE_SRC_HASH} *${PACKAGE_SRC_NAME}" | sha256sum -c -
-        X "${PACKAGE_SRC_NAME}" || X "${PACKAGE_SRC_NAME}"
-
-        cd "${BUILD_DIR}/src/${PACKAGE_DIR_NAME}"
-        find "${BASE_DIR}/patches/" -type f -name "${PACKAGE_NAME}*.patch" -print0 | sort -z | xargs -t -0 -n 1 patch -p1 -i
-
-        "${BASE_DIR}/build/${PACKAGE_NAME}.sh" \
-            "${BUILD_DIR}/src/${PACKAGE_DIR_NAME}" \
-            "${BUILD_DIR}/src/${PACKAGE_DIR_NAME}-build"
-
-        touch "${BUILD_DIR}/build-${PACKAGE_NAME}"
-    fi
-}
-
-####################################################################################################
 BUILD "glib"            "c5a66bf143065648c135da4c943d2ac23cce15690fc91c358013b2889111156c" "https://download.gnome.org/sources/glib/2.66/glib-2.66.0.tar.xz"
 BUILD "expat"           "4456e0aa72ecc7e1d4b3368cd545a5eec7f9de5133a8dc37fdb1efa6174c4947" "https://github.com/libexpat/libexpat/releases/download/R_2_2_9/expat-2.2.9.tar.gz"
 
-BUILD "orc"             "a66e3d8f2b7e65178d786a01ef61f2a0a0b4d0b8370de7ce134ba73da4af18f0" "https://gstreamer.freedesktop.org/src/orc/orc-0.4.32.tar.xz"
+BUILD "orc"             "a0ab5f10a6a9ae7c3a6b4218246564c3bf00d657cbdf587e6d34ec3ef0616075" "https://gstreamer.freedesktop.org/src/orc/orc-0.4.31.tar.xz"
 
 BUILD "libwebp"         "424faab60a14cb92c2a062733b6977b4cc1e875a6398887c5911b3a1a6c56c51" "https://github.com/webmproject/libwebp/archive/v1.1.0.tar.gz"                               "libwebp-1.1.0.tar.gz"
 
@@ -138,13 +48,3 @@ BUILD "libheif"         "5f65ca2bd2510eed4e13bdca123131c64067e9dd809213d7aef4dc5
 BUILD "giflib"          "34a7377ba834397db019e8eb122e551a49c98f49df75ec3fcc92b9a794a4f6d1" "https://downloads.sourceforge.net/project/giflib/giflib-5.1.4.tar.gz"
 
 BUILD "libvips"         "e089bb4f73e1dce866ae53e25604ea4f94535488a45bb4f633032e1d2f4e2dda" "https://github.com/libvips/libvips/releases/download/v8.10.1/vips-8.10.1.tar.gz"
-
-####################################################################################################
-
-cd "${BASE_DIR}/src"
-make clean
-make ${MAKE_JOBS}
-
-cd "${BASE_DIR}/test"
-make clean
-make ${MAKE_JOBS}

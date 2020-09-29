@@ -1,4 +1,4 @@
-TARGET_DIR  := ../build
+TARGET_DIR  := ../bin
 TARGET_NAME := TiXRsz_test.exe
 
 SRCS := \

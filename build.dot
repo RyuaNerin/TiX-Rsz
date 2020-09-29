@@ -1,0 +1,131 @@
+digraph dep {
+    "glib" -> "libvips"
+    "expat" -> "libvips"
+
+    "libjpeg-turbo" -> "libvips"
+    "libexif" -> "libvips"
+    "giflib" -> "libvips"
+    "librsvg" -> "libvips"
+    "poppler" -> "libvips"
+    "libtiff" -> "libvips"
+    "libspng" -> "libvips"
+    "libpng" -> "libvips"
+    "ImageMagick" -> "libvips"
+    "orc" -> "libvips"
+    "libwebp" -> "libvips"
+    "libheif" -> "libvips"
+
+    ////////////////////////////////////////////////////////////
+    
+    // glib
+    "gettext" -> "glib"
+    "libffi" -> "glib"
+    "zlib" -> "glib"
+
+    // expat
+
+    // libjpeg-turbo
+    "yasm" -> "libjpeg-turbo"
+
+    // libexif
+
+    // giflib
+
+    // librsvg
+    "cairo" -> "librsvg"
+    "freetype" -> "librsvg"
+    "gdk-pixbuf" -> "librsvg"
+    "gio" -> "librsvg"
+    "libxml2" -> "librsvg"
+    "pango" -> "librsvg"
+
+    // poppler
+    "libjpeg-turbo" -> "poppler"
+    "freetype" -> "poppler"
+    "glib" -> "poppler"
+    "openjpeg" -> "poppler"
+    "lcms" -> "poppler"
+    "libpng" -> "poppler"
+    "libtiff" -> "poppler"
+    "zlib" -> "poppler"
+
+    // libtiff
+    "zlib" -> "libtiff"
+    "libjpeg-turbo" -> "libtiff"
+    "libwebp" -> "libtiff"
+
+    // libspng
+    "zlib" -> "libspng"
+
+    // libpng
+    "zlib" -> "libpng"
+
+    // ImageMagick
+
+    // orc
+
+    // libwebp
+
+    // libheif
+    "libde265" -> "libheif"
+
+    ////////////////////////////////////////////////////////////
+
+    // cairo
+    "fontconfig" -> "cairo"
+    "freetype" -> "cairo"
+    "glib" -> "cairo"
+    "libpng" -> "cairo"
+    "pixman" -> "cairo"
+    "zlib" -> "cairo"
+    "lzo" -> "cairo"
+
+    // freetype
+
+    // gdk-pixbuf
+    "glib" -> "gdk-pixbuf"
+    "libpng" -> "gdk-pixbuf"
+    "libjpeg-turbo" -> "gdk-pixbuf"
+    "libtiff" -> "gdk-pixbuf"
+
+    // gio
+
+    // libxml2
+
+    // pango
+    "cairo" -> "pango"
+    "fontconfig" -> "pango"
+    "freetype" -> "pango"
+    "glib" -> "pango"
+    "harfbuzz" -> "pango"
+
+    // openjpeg
+    "lcms" -> "openjpeg"
+    "libpng" -> "openjpeg"
+    "tiff" -> "openjpeg"
+    "zlib" -> "openjpeg"
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+    
+    // pixman
+    
+    // fontconfig
+    "expat" -> "fontconfig"
+    "freetype" -> "fontconfig"
+    
+    
+
+}
